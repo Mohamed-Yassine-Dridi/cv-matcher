@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conan Matcher — Case File</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=IBM+Plex+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0d;
+  --paper: #0d1220;
+  --paper2: #111828;
+  --paper3: #162035;
+  --red: #c0392b;
+  --red2: #e74c3c;
+  --blue: #0A1931;
+  --blue2: #1a3a6a;
+  --blue3: #2a5aaa;
+  --text: #c8dff0;
+  --text2: #e8f4ff;
+  --muted: #3a5a7a;
+  --border: rgba(26,58,106,0.4);
+  --border2: rgba(42,90,170,0.5);
+  --mono: 'IBM Plex Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+#rain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.15; }
+.wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 6rem; position: relative; z-index: 2; }
+
+header { text-align: center; padding: 2.5rem 0 2rem; animation: fadeIn 1s ease both; }
+.case-stamp {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--red);
+  border: 1px solid var(--red);
+  padding: 3px 10px;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  animation: flicker 4s ease infinite;
+}
+@keyframes flicker { 0%,100%{opacity:1}92%{opacity:1}93%{opacity:0.3}94%{opacity:1}97%{opacity:0.5}98%{opacity:1} }
+
+.main-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 10vw, 6rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--text2);
+  text-shadow: 0 0 40px rgba(42,90,170,0.3);
+  margin-bottom: 0.25rem;
+}
+.main-title span { color: var(--blue3); }
+
+.subtitle-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 0.75rem; }
+.divider-line { height: 1px; width: 60px; background: linear-gradient(90deg, transparent, var(--blue3), transparent); }
+.subtitle { font-family: 'Special Elite', cursive; font-size: 13px; color: var(--blue3); letter-spacing: 0.1em; }
+.tagline { font-style: italic; font-size: 15px; color: var(--muted); margin-top: 0.5rem; }
+.glasses { margin: 1rem auto 0; width: 90px; opacity: 0.55; display: block; }
+
+.case-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  animation: slideUp 0.6s ease both;
+}
+.case-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--red), var(--blue3), transparent);
+}
+.case-card:nth-child(2){animation-delay:0.1s}
+.case-card:nth-child(3){animation-delay:0.2s}
+
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue3);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.upload-zone {
+  border: 1px dashed rgba(42,90,170,0.3);
+  border-radius: 2px;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: var(--paper2);
+  position: relative;
+  overflow: hidden;
+}
+.upload-zone::before {
+  content: 'EVIDENCE';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) rotate(-15deg);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  color: rgba(42,90,170,0.04);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.upload-zone:hover { border-color: var(--blue3); background: var(--paper3); }
+.upload-zone.has-file { border-color: var(--blue3); border-style: solid; }
+.upload-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+.upload-main { font-family: 'Special Elite', cursive; font-size: 15px; color: var(--text2); margin-bottom: 4px; }
+.upload-hint { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+#fileInput { display: none; }
+
+.evidence-tag {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(42,90,170,0.1);
+  border: 1px solid rgba(42,90,170,0.3);
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--blue3);
+}
+.evidence-tag.show { display: flex; }
+.evidence-tag::before { content:'■'; font-size:8px; }
+
+.filters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.filter-item .flabel {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 6px;
+}
+select {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--paper2);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  color: var(--text2);
+  font-family: 'Special Elite', cursive;
+  font-size: 14px;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%232a5aaa'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color 0.2s;
+}
+select option { background: #0d1220; }
+select:focus { outline: none; border-color: var(--blue3); }
+
+.btn-solve {
+  width: 100%;
+  padding: 16px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.6s 0.35s ease both;
+  opacity: 0;
+}
+.btn-solve::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.btn-solve:hover::after { transform: translateX(100%); }
+.btn-solve:hover { background: var(--red2); }
+.btn-solve:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.progress-wrap {
+  display: none;
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+.progress-wrap.show { display: block; }
+.progress-top { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--blue3); margin-bottom: 8px; }
+.progress-track { height: 2px; background: var(--paper3); border-radius: 1px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--blue3)); width: 0%; transition: width 0.5s ease; }
+.progress-log { margin-top: 10px; font-family: var(--mono); font-size: 10px; color: var(--muted); min-height: 16px; }
+.progress-log::before { content:'> '; color: var(--blue3); }
+
+.error-box {
+  display: none;
+  background: rgba(192,57,43,0.08);
+  border: 1px solid rgba(192,57,43,0.25);
+  border-radius: 2px;
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--red2);
+  margin-top: 1rem;
+}
+.error-box.show { display: block; }
+.error-box::before { content:'[ERROR] '; opacity:0.6; }
+
+.results-section { display: none; margin-top: 1.5rem; animation: fadeIn 0.5s ease both; }
+.results-section.show { display: block; }
+
+.results-header-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+.results-title-txt { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.08em; color: var(--text2); }
+.results-badge { font-family: var(--mono); font-size: 11px; color: var(--blue3); background: rgba(42,90,170,0.1); border: 1px solid var(--border2); padding: 4px 10px; border-radius: 2px; }
+
+.result-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(42,90,170,0.1); transition: all 0.2s; }
+.result-item:last-child { border-bottom: none; }
+.result-item:hover { background: rgba(42,90,170,0.05); padding-left: 8px; }
+
+.case-num {
+  flex-shrink: 0;
+  width: 52px; height: 52px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper2);
+}
+.case-num .pct { font-family: 'Bebas Neue', sans-serif; font-size: 18px; line-height: 1; }
+.case-num .pct-label { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 0.1em; }
+.score-high .pct { color: var(--blue3); }
+.score-high { border-color: rgba(42,90,170,0.6); }
+.score-mid .pct { color: #5599cc; }
+.score-low .pct { color: var(--muted); }
+
+.result-body { flex: 1; min-width: 0; }
+.result-title-txt { font-family: 'Special Elite', cursive; font-size: 15px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+.result-url-txt { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.open-btn { flex-shrink: 0; font-family: var(--mono); font-size: 11px; color: var(--blue3); border: 1px solid var(--border2); padding: 6px 12px; border-radius: 2px; text-decoration: none; background: transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.open-btn:hover { background: rgba(42,90,170,0.15); color: #4a7acc; border-color: var(--blue3); }
+
+.empty-state { text-align: center; padding: 3rem 1rem; font-family: 'Special Elite', cursive; color: var(--muted); font-size: 15px; font-style: italic; }
+
+footer { text-align: center; margin-top: 3rem; font-family: var(--mono); font-size: 10px; color: var(--muted); opacity: 0.4; letter-spacing: 0.1em; }
+
+@media(max-width:480px){ .filters-grid{grid-template-columns:1fr} .main-title{font-size:3rem} }
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<div class="wrap">
+
+  <header>
+    <div class="case-stamp">Case File Active</div>
+    <div class="main-title">CONAN <span>MATCHER</span></div>
+    <div class="subtitle-row">
+      <div class="divider-line"></div>
+      <span class="subtitle">Detective Division · AIESEC Intelligence</span>
+      <div class="divider-line"></div>
+    </div>
+    <p class="tagline">"There is always only one truth." — Upload your CV to begin.</p>
+    <svg class="glasses" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="20" r="17" stroke="#2a5aaa" stroke-width="2.5"/>
+      <circle cx="90" cy="20" r="17" stroke="#2a5aaa" stroke-width="2.5"/>
+      <path d="M47 20 Q60 14 73 20" stroke="#2a5aaa" stroke-width="2.5" fill="none"/>
+      <path d="M3 10 Q10 6 13 10" stroke="#2a5aaa" stroke-width="2" fill="none"/>
+      <path d="M107 10 Q110 6 117 10" stroke="#2a5aaa" stroke-width="2" fill="none"/>
+    </svg>
+  </header>
+
+  <div class="case-card">
+    <div class="section-label">Evidence — Submit CV</div>
+    <div class="upload-zone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <span class="upload-icon">🗂️</span>
+      <p class="upload-main">Drop your CV here — or click to open file</p>
+      <p class="upload-hint">PDF format only</p>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf" onchange="handleFile(this)">
+    <div class="evidence-tag" id="evidenceTag">
+      <span id="evidenceName">evidence.pdf</span>
+      <span style="margin-left:auto;opacity:0.5">LOGGED</span>
+    </div>
+  </div>
+
+  <div class="case-card">
+    <div class="section-label">Investigation Parameters</div>
+    <div class="filters-grid">
+      <div class="filter-item">
+        <span class="flabel">Territory</span>
+        <select id="region">
+          <option value="any">All Territories</option>
+          <option value="europe">Europe</option>
+          <option value="americas">Americas</option>
+          <option value="asia">Asia Pacific</option>
+          <option value="mea">Middle East &amp; Africa</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <span class="flabel">Case Duration</span>
+        <select id="duration">
+          <option value="any">Any Duration</option>
+          <option value="short">Short Term</option>
+          <option value="mid">Mid Term</option>
+          <option value="long">Long Term</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-solve" id="solveBtn" onclick="runMatch()" disabled>🔍 Crack the Case</button>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-top">
+      <span id="progressText">Investigating...</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-log" id="progressLog">Initializing search...</div>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="results-section" id="resultsSection">
+    <div class="case-card">
+      <div class="results-header-bar">
+        <span class="results-title-txt">Case Leads</span>
+        <span class="results-badge" id="resultsCount">0 leads</span>
+      </div>
+      <div id="resultsList"></div>
+    </div>
+  </div>
+
+  <footer>CONAN MATCHER · AIESEC GLOBAL TALENT · ALL CASE FILES ENCRYPTED</footer>
+</div>
+
+<script>
+const canvas = document.getElementById('rain');
+const ctx = canvas.getContext('2d');
+let drops = [];
+function initRain() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  drops = Array.from({length: 80}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    speed: 2 + Math.random() * 3,
+    len: 10 + Math.random() * 20,
+    op: 0.08 + Math.random() * 0.2
+  }));
+}
+function drawRain() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drops.forEach(d => {
+    ctx.strokeStyle = `rgba(42,90,170,${d.op})`;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x - 1, d.y + d.len);
+    ctx.stroke();
+    d.y += d.speed;
+    if (d.y > canvas.height) { d.y = -d.len; d.x = Math.random() * canvas.width; }
+  });
+  requestAnimationFrame(drawRain);
+}
+window.addEventListener('resize', initRain);
+initRain(); drawRain();
+
+let selectedFile = null;
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.style.borderColor='var(--blue3)'; });
+dropzone.addEventListener('dragleave', () => { dropzone.style.borderColor=''; });
+dropzone.addEventListener('drop', e => { e.preventDefault(); const f=e.dataTransfer.files[0]; if(f&&f.type==='application/pdf') setFile(f); });
+
+function handleFile(input) { if(input.files[0]) setFile(input.files[0]); }
+function setFile(f) {
+  selectedFile = f;
+  document.getElementById('evidenceName').textContent = f.name;
+  document.getElementById('evidenceTag').classList.add('show');
+  dropzone.classList.add('has-file');
+  dropzone.querySelector('.upload-main').textContent = f.name + ' — evidence logged';
+  document.getElementById('solveBtn').disabled = false;
+  hideError();
+}
+
+const logs = ['Scanning evidence...','Cross-referencing database...','Analyzing skill fingerprints...','Running semantic comparison...','Calculating match probability...','Compiling case leads...','Almost there, detective...'];
+
+async function runMatch() {
+  if (!selectedFile) return;
+  const btn = document.getElementById('solveBtn');
+  btn.disabled = true; btn.textContent = 'Investigating...';
+  showProgress(); hideError(); hideResults();
+  const region = document.getElementById('region').value;
+  const duration = document.getElementById('duration').value;
+  const formData = new FormData();
+  formData.append('file', selectedFile);
+  formData.append('region', region);
+  formData.append('duration', duration);
+  let allResults = [], logIdx = 0;
+  const logInt = setInterval(() => { if(logIdx<logs.length) document.getElementById('progressLog').textContent=logs[logIdx++]; }, 1800);
+  try {
+    const response = await fetch('/match', { method:'POST', body:formData });
+    if (!response.ok) throw new Error('Server returned '+response.status);
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer='', progress=8;
+    while(true) {
+      const {done,value} = await reader.read();
+      if(done) break;
+      buffer += decoder.decode(value,{stream:true});
+      const lines = buffer.split('\n'); buffer = lines.pop();
+      for(const line of lines) {
+        if(!line.startsWith('data: ')) continue;
+        const payload = line.slice(6).trim();
+        if(payload==='[DONE]') break;
+        try { const p=JSON.parse(payload); if(Array.isArray(p)){allResults=p; progress=Math.min(progress+18,92); setProgress(progress);} } catch(e){}
+      }
+    }
+    clearInterval(logInt);
+    setProgress(100);
+    document.getElementById('progressLog').textContent = 'Case cracked. '+allResults.length+' leads identified.';
+    setTimeout(() => { hideProgress(); showResults(allResults); btn.disabled=false; btn.textContent='🔍 Crack the Case'; }, 700);
+  } catch(err) {
+    clearInterval(logInt); hideProgress();
+    showError('Could not reach headquarters. Make sure your Space is running. ('+err.message+')');
+    btn.disabled=false; btn.textContent='🔍 Crack the Case';
+  }
+}
+
+function showResults(results) {
+  document.getElementById('resultsSection').classList.add('show');
+  document.getElementById('resultsCount').textContent = results.length+' leads';
+  const list = document.getElementById('resultsList');
+  if(!results.length){ list.innerHTML='<div class="empty-state">No leads found. The case goes cold... try different filters.</div>'; return; }
+  list.innerHTML = results.map((r,i) => {
+    const s=Math.round(r.score);
+    const cls=s>=75?'score-high':s>=50?'score-mid':'score-low';
+    return `<div class="result-item" style="animation:slideUp 0.4s ${i*0.04}s ease both;opacity:0">
+      <div class="case-num ${cls}"><span class="pct">${s}</span><span class="pct-label">MATCH</span></div>
+      <div class="result-body">
+        <div class="result-title-txt">${esc(r.title)}</div>
+        <div class="result-url-txt">${esc(r.url)}</div>
+      </div>
+      <a class="open-btn" href="${esc(r.url)}" target="_blank">OPEN →</a>
+    </div>`;
+  }).join('');
+}
+
+function showProgress(){ document.getElementById('progressWrap').classList.add('show'); setProgress(5); }
+function hideProgress(){ document.getElementById('progressWrap').classList.remove('show'); }
+function setProgress(p){ document.getElementById('progressFill').style.width=p+'%'; document.getElementById('progressPct').textContent=p+'%'; }
+function showError(msg){ const b=document.getElementById('errorBox'); b.textContent=msg; b.classList.add('show'); }
+function hideError(){ document.getElementById('errorBox').classList.remove('show'); }
+function hideResults(){ document.getElementById('resultsSection').classList.remove('show'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>
